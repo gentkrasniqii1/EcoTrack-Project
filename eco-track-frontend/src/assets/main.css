@@ -1,5 +1,10 @@
-@import './base.css';
+/* Import custom base styles (if any) */
+@imp@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+
+/* Custom layout styling */
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -7,6 +12,7 @@
   font-weight: normal;
 }
 
+/* Link & green class styling */
 a,
 .green {
   text-decoration: none;
@@ -21,6 +27,7 @@ a,
   }
 }
 
+/* Desktop layout behavior */
 @media (min-width: 1024px) {
   body {
     display: flex;
