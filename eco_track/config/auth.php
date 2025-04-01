@@ -42,6 +42,12 @@ return [
         ],
     ],
 
+    'api' => [
+        'driver' => 'jwt', // <-- ndrysho nga 'token' në 'jwt'
+        'provider' => 'users',
+    ],
+],
+
     /*
     |--------------------------------------------------------------------------
     | User Providers

@@ -1,263 +1,349 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] p-6">
-    <div
-      class="flex flex-col md:flex-row w-full max-w-6xl rounded-3xl overflow-hidden border border-white/20 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] transition-all duration-500 bg-white/10 dark:bg-white/5">
+  <div class="auth-wrapper">
+    <div class="auth-box" :class="{ loading: isLoading }">
+      <img src="#" alt="Logo" class="logo" />
+      <transition name="fade-slide">
+        <div v-if="isLogin" key="login">
+          <h2>Sign In</h2>
+          <form @submit.prevent="handleLogin">
+            <div class="form-group">
+              <label>Email or Username</label>
+              <input type="text" v-model="loginData.identifier" placeholder="Enter your email or username" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <div class="password-wrapper">
+                <input :type="showPassword ? 'text' : 'password'" v-model="loginData.password" placeholder="Enter your password" required />
+                <span class="toggle-visibility" @click="togglePassword">
+                  {{ showPassword ? '🙈' : '👁️' }}
+                </span>
+              </div>
+            </div>
+            <button type="submit" class="btn">Login</button>
 
-      <!-- Form Section -->
-      <div class="w-full md:w-1/2 p-10 bg-white dark:bg-gray-900 text-gray-800 dark:text-white transition duration-300">
-        <h2 class="text-4xl font-bold text-center mb-10 tracking-tight leading-tight">
-          {{ isLogin ? 'Sign In' : 'Create Account' }}
-        </h2>
+            <div class="divider">or</div>
+            <button type="button" class="btn google-btn" @click="mockOAuth('Google')">Sign in with Google</button>
+            <button type="button" class="btn facebook-btn" @click="mockOAuth('Facebook')">Sign in with Facebook</button>
 
-        <form @submit.prevent="isLogin ? handleLogin() : handleRegister()" class="space-y-6 animate-fade-in">
-          <!-- Name Field (Register only) -->
-          <div v-if="!isLogin" class="relative group">
-            <input
-              type="text"
-              v-model="registerData.name"
-              required
-              placeholder="Full Name"
-              class="form-input peer pl-10 w-full px-4 pt-5 pb-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
-            />
-            <i class="fas fa-user absolute left-3 top-4 text-gray-400 group-focus-within:text-emerald-500"></i>
-            <label
-              class="absolute left-10 top-2 text-sm text-gray-500 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
-              Full Name
-            </label>
-            <p v-if="registerErrors.name" class="text-red-500 text-sm mt-1">{{ registerErrors.name }}</p>
-          </div>
-
-          <!-- Email Field -->
-          <div class="relative group">
-            <!-- Login Email -->
-            <input
-              v-if="isLogin"
-              type="email"
-              v-model="loginData.email"
-              required
-              placeholder="Email"
-              class="form-input peer pl-10 w-full px-4 pt-5 pb-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
-            />
-            <!-- Register Email -->
-            <input
-              v-else
-              type="email"
-              v-model="registerData.email"
-              required
-              placeholder="Email"
-              class="form-input peer pl-10 w-full px-4 pt-5 pb-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
-            />
-            <i class="fas fa-envelope absolute left-3 top-4 text-gray-400 group-focus-within:text-emerald-500"></i>
-            <label
-              class="absolute left-10 top-2 text-sm text-gray-500 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
-              Email
-            </label>
-            <p v-if="isLogin ? loginErrors.email : registerErrors.email" class="text-red-500 text-sm mt-1">
-              {{ isLogin ? loginErrors.email : registerErrors.email }}
-            </p>
-          </div>
-
-          <!-- Password Field -->
-          <div class="relative group">
-            <!-- Login Password -->
-            <input
-              v-if="isLogin"
-              type="password"
-              v-model="loginData.password"
-              required
-              placeholder="Password"
-              class="form-input peer pl-10 w-full px-4 pt-5 pb-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
-            />
-            <!-- Register Password -->
-            <input
-              v-else
-              type="password"
-              v-model="registerData.password"
-              required
-              placeholder="Password"
-              class="form-input peer pl-10 w-full px-4 pt-5 pb-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
-            />
-            <i class="fas fa-lock absolute left-3 top-4 text-gray-400 group-focus-within:text-emerald-500"></i>
-            <label
-              class="absolute left-10 top-2 text-sm text-gray-500 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
-              Password
-            </label>
-            <p v-if="isLogin ? loginErrors.password : registerErrors.password" class="text-red-500 text-sm mt-1">
-              {{ isLogin ? loginErrors.password : registerErrors.password }}
-            </p>
-          </div>
-
-          <!-- Confirm Password Field (Register only) -->
-          <div v-if="!isLogin" class="relative group">
-            <input
-              type="password"
-              v-model="registerData.confirmPassword"
-              required
-              placeholder="Confirm Password"
-              class="form-input peer pl-10 w-full px-4 pt-5 pb-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
-            />
-            <i class="fas fa-check-circle absolute left-3 top-4 text-gray-400 group-focus-within:text-emerald-500"></i>
-            <label
-              class="absolute left-10 top-2 text-sm text-gray-500 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
-              Confirm Password
-            </label>
-            <p v-if="registerErrors.confirmPassword" class="text-red-500 text-sm mt-1">
-              {{ registerErrors.confirmPassword }}
-            </p>
-          </div>
-
-          <!-- Submit Button -->
-          <button
-            type="submit"
-            class="w-full bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white font-semibold py-3 rounded-xl shadow-lg transition-all duration-300">
-            {{ isLogin ? 'Sign In' : 'Register' }}
-          </button>
-        </form>
-
-        <!-- Social Login Options -->
-        <div class="text-center mt-8">
-          <p class="text-sm text-gray-500 mb-3">or continue with</p>
-          <div class="flex justify-center space-x-4">
-            <button class="bg-white hover:bg-gray-100 p-3 rounded-full shadow transition">
-              <i class="fab fa-facebook-f text-blue-600"></i>
-            </button>
-            <button class="bg-white hover:bg-gray-100 p-3 rounded-full shadow transition">
-              <i class="fab fa-google text-red-600"></i>
-            </button>
-            <button class="bg-white hover:bg-gray-100 p-3 rounded-full shadow transition">
-              <i class="fab fa-linkedin-in text-sky-500"></i>
-            </button>
-          </div>
+            <div class="toggle">No account? <a @click="toggleForm">Sign Up</a></div>
+          </form>
         </div>
-      </div>
+        <div v-else key="register">
+          <h2>Create Account</h2>
+          <form @submit.prevent="handleRegister">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" v-model="registerData.name" placeholder="Your full name" required />
+            </div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" v-model="registerData.username" placeholder="Choose a username" required />
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="text" v-model="registerData.phone" placeholder="Enter your phone number" required />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" v-model="registerData.email" placeholder="Enter your email" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <div class="password-wrapper">
+                <input :type="showPassword ? 'text' : 'password'" v-model="registerData.password" placeholder="Create a password" required />
+                <span class="toggle-visibility" @click="togglePassword">
+                  {{ showPassword ? '🙈' : '👁️' }}
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Confirm Password</label>
+              <input type="password" v-model="registerData.confirmPassword" placeholder="Confirm your password" required />
+            </div>
+            <button type="submit" class="btn">Register</button>
 
-      <!-- Side Info Panel -->
-      <div
-        class="hidden md:flex w-1/2 flex-col justify-center items-center bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-10 text-center transition-all duration-500">
-        <h2 class="text-4xl font-extrabold mb-4 leading-snug drop-shadow-lg animate-fade-in">
-          {{ isLogin ? 'Welcome Back 👋' : 'Join Our Community 🚀' }}
-        </h2>
-        <p class="mb-8 max-w-sm text-md leading-relaxed">
-          {{ isLogin
-            ? 'We’re glad to see you again. Let’s continue your journey with us!'
-            : 'Create your account and unlock endless learning, collaboration, and growth.' }}
-        </p>
-        <button
-          @click="toggleForm"
-          class="bg-white text-green-600 font-semibold px-6 py-2 rounded-full shadow-md hover:bg-gray-200 transition">
-          {{ isLogin ? 'No account? Sign Up' : 'Have an account? Sign In' }}
-        </button>
-      </div>
+            <div class="divider">or</div>
+            <button type="button" class="btn google-btn">Sign up with Google</button>
+            <button type="button" class="btn facebook-btn">Sign up with Facebook</button>
 
+            <div class="toggle">Already have an account? <a @click="toggleForm">Sign In</a></div>
+          </form>
+        </div>
+      </transition>
+      <div v-if="isLoading" class="spinner"></div>
     </div>
   </div>
 </template>
-
-
-
 <script>
-import axios from 'axios';
+import axios from '@/axios';
+import { useToast } from 'vue-toastification';
 
 export default {
-  name: 'AuthForm',
+  name: 'AuthPureCSS',
   data() {
     return {
       isLogin: true,
-      loginData: { email: '', password: '' },
-      registerData: { name: '', email: '', password: '', confirmPassword: '' },
-      loginErrors: {},
-      loginError: '',
-      registerErrors: {},
-      registerError: ''
+      isLoading: false,
+      showPassword: false,
+      loginData: { identifier: '', password: '' },
+      registerData: {
+        name: '',
+        username: '',
+        phone: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      },
+      toast: useToast()
     };
   },
   methods: {
     toggleForm() {
       this.isLogin = !this.isLogin;
-      this.loginError = '';
-      this.registerError = '';
-      this.loginErrors = {};
-      this.registerErrors = {};
     },
-    validateLogin() {
-      this.loginErrors = {};
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (!this.loginData.email) {
-        this.loginErrors.email = 'Email is required.';
-      } else if (!emailPattern.test(this.loginData.email)) {
-        this.loginErrors.email = 'Enter a valid email address.';
-      }
-
-      if (!this.loginData.password) {
-        this.loginErrors.password = 'Password is required.';
-      }
-
-      return Object.keys(this.loginErrors).length === 0;
-    },
-    validateRegister() {
-      this.registerErrors = {};
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
-
-      if (!this.registerData.name) {
-        this.registerErrors.name = 'Name is required.';
-      }
-
-      if (!this.registerData.email) {
-        this.registerErrors.email = 'Email is required.';
-      } else if (!emailPattern.test(this.registerData.email)) {
-        this.registerErrors.email = 'Enter a valid email address.';
-      }
-
-      if (!this.registerData.password) {
-        this.registerErrors.password = 'Password is required.';
-      } else if (!passwordPattern.test(this.registerData.password)) {
-        this.registerErrors.password = 'Must be at least 8 characters, include uppercase, number, and symbol.';
-      }
-
-      if (!this.registerData.confirmPassword) {
-        this.registerErrors.confirmPassword = 'Confirm your password.';
-      } else if (this.registerData.password !== this.registerData.confirmPassword) {
-        this.registerErrors.confirmPassword = 'Passwords do not match.';
-      }
-
-      return Object.keys(this.registerErrors).length === 0;
+    togglePassword() {
+      this.showPassword = !this.showPassword;
     },
     async handleLogin() {
-      this.loginError = '';
-      if (!this.validateLogin()) return;
-
+      this.isLoading = true;
       try {
-        const response = await axios.post('/api/login', this.loginData);
-        console.log('Login successful:', response.data);
-        // TODO: Redirect or store auth token
-      } catch (error) {
-        this.loginError = error.response?.data?.message || 'Login failed. Try again.';
+        const res = await axios.post('/login', this.loginData);
+        const token = res.data.token;
+        localStorage.setItem('jwt', token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        this.toast.success('Login successful!');
+      } catch (err) {
+        this.toast.error('Invalid credentials');
+      } finally {
+        this.isLoading = false;
       }
     },
     async handleRegister() {
-      this.registerError = '';
-      if (!this.validateRegister()) return;
-
+      this.isLoading = true;
       try {
-        const response = await axios.post('/api/register', this.registerData);
-        console.log('Registration successful:', response.data);
-        // TODO: Redirect or auto-login
-      } catch (error) {
-        if (error.response?.status === 422 && error.response.data.errors) {
-          const serverErrors = error.response.data.errors;
-          for (const field in serverErrors) {
-            this.registerErrors[field] = serverErrors[field][0];
-          }
-        } else {
-          this.registerError = error.response?.data?.message || 'Registration failed. Try again.';
-        }
+        await axios.post('/register', this.registerData);
+        this.toast.success('Registration successful! Please login.');
+        this.toggleForm();
+      } catch (err) {
+        this.toast.error('Registration failed');
+      } finally {
+        this.isLoading = false;
       }
+    },
+    mockOAuth(provider) {
+      this.toast.info(`Redirecting to ${provider} login...`);
     }
   }
 };
 </script>
 
+
 <style scoped>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(to right, rgba(15,32,39,0.9), rgba(32,58,67,0.9), rgba(44,83,100,0.9)), url('/background.jpg') center/cover no-repeat;
+  padding: 40px 20px;
+  overflow-x: hidden;
+}
+
+.auth-box {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 20px;
+  width: 60px;
+  height: auto;
+  object-fit: contain;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.4s ease;
+}
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.spinner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ccc;
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+  color: #111;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #10b981;
+  outline: none;
+}
+
+.btn {
+  width: 100%;
+  background: #10b981;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  background: #059669;
+}
+
+.btn.google-btn {
+  background: #db4437;
+}
+
+.btn.google-btn:hover {
+  background: #c23321;
+}
+
+.btn.facebook-btn {
+  background: #3b5998;
+}
+
+.btn.facebook-btn:hover {
+  background: #2d4373;
+}
+
+.divider {
+  text-align: center;
+  margin: 20px 0 10px;
+  font-size: 14px;
+  color: #777;
+  position: relative;
+}
+
+.toggle {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.toggle a {
+  color: #10b981;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+@media (max-width: 480px) {
+  .auth-box {
+    padding: 25px 20px;
+    border-radius: 8px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  .btn {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  .logo {
+    width: 50px;
+    margin-bottom: 16px;
+  }
+}
 </style>
