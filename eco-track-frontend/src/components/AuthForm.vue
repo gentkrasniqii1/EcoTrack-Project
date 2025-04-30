@@ -63,8 +63,9 @@
             <button type="submit" class="btn">Register</button>
 
             <div class="divider">or</div>
-            <button type="button" class="btn google-btn">Sign up with Google</button>
-            <button type="button" class="btn facebook-btn">Sign up with Facebook</button>
+            <button type="button" class="btn google-btn" @click="mockOAuth('Google')">Sign up with Google</button>
+<button type="button" class="btn facebook-btn" @click="mockOAuth('Facebook')">Sign up with Facebook</button>
+
 
             <div class="toggle">Already have an account? <a @click="toggleForm">Sign In</a></div>
           </form>
@@ -77,6 +78,7 @@
 <script>
 import axios from '@/axios';
 import { useToast } from 'vue-toastification';
+import AuthService from '@/services/AuthService'; // 👈 Import AuthService (you need to create it as I showed before!)
 
 export default {
   name: 'AuthPureCSS',
@@ -85,7 +87,10 @@ export default {
       isLogin: true,
       isLoading: false,
       showPassword: false,
-      loginData: { identifier: '', password: '' },
+      loginData: {
+        identifier: '',
+        password: ''
+      },
       registerData: {
         name: '',
         username: '',
@@ -97,6 +102,13 @@ export default {
       toast: useToast()
     };
   },
+  mounted() {
+    // 👈 Check if we are coming back from Google OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('state') && urlParams.has('code')) {
+      this.handleGoogleCallback();
+    }
+  },
   methods: {
     toggleForm() {
       this.isLogin = !this.isLogin;
@@ -105,37 +117,84 @@ export default {
       this.showPassword = !this.showPassword;
     },
     async handleLogin() {
-      this.isLoading = true;
-      try {
-        const res = await axios.post('/login', this.loginData);
-        const token = res.data.token;
-        localStorage.setItem('jwt', token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        this.toast.success('Login successful!');
-      } catch (err) {
-        this.toast.error('Invalid credentials');
-      } finally {
-        this.isLoading = false;
-      }
-    },
+  try {
+    const res = await axios.post('/login', this.loginData);
+    const token = res.data.token;
+    localStorage.setItem('jwt', token); // save token
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    this.toast.success('Login successful!');
+    this.$router.push({ name: 'home' }); // Redirect to Home page
+  } catch (error) {
+    this.toast.error('Login failed');
+  }
+},
+
     async handleRegister() {
       this.isLoading = true;
       try {
-        await axios.post('/register', this.registerData);
+        await axios.post('/register', {
+          name: this.registerData.name,
+          username: this.registerData.username,
+          phone: this.registerData.phone,
+          email: this.registerData.email,
+          password: this.registerData.password,
+          password_confirmation: this.registerData.confirmPassword
+        });
         this.toast.success('Registration successful! Please login.');
         this.toggleForm();
       } catch (err) {
-        this.toast.error('Registration failed');
+        if (err.response && err.response.data && err.response.data.errors) {
+          const errors = err.response.data.errors;
+          Object.values(errors).forEach(msgArray => {
+            msgArray.forEach(msg => this.toast.error(msg));
+          });
+        } else {
+          this.toast.error('Registration failed');
+        }
       } finally {
         this.isLoading = false;
       }
     },
+    async handleLogout() {
+      try {
+        await axios.post('/logout');
+        localStorage.removeItem('jwt');
+        delete axios.defaults.headers.common['Authorization'];
+        this.toast.success('Logged out successfully');
+      } catch (err) {
+        this.toast.error('Logout failed');
+      }
+    },
     mockOAuth(provider) {
-      this.toast.info(`Redirecting to ${provider} login...`);
-    }
+      const validProviders = ['google', 'facebook'];
+      if (!validProviders.includes(provider.toLowerCase())) {
+        this.toast.error('Invalid provider');
+        return;
+      }
+      const base = 'http://127.0.0.1:8000/api/auth/'; // 👈 use correct API endpoint
+      window.location.href = `${base}${provider.toLowerCase()}`;
+    },
+    async handleGoogleCallback() {
+  try {
+    const url = window.location.href;
+    const callbackUrl = url.replace('http://127.0.0.1:5173', 'http://127.0.0.1:8000');
+    const response = await axios.get(callbackUrl);
+
+    AuthService.loginWithGoogleCallback(response.data);
+
+    this.toast.success('Google login successful!');
+    this.$router.push({ name: 'home' }); // 👈 Redirect to Home after Google login
+  } catch (error) {
+    console.error(error);
+    this.toast.error('Google login failed.');
+  }
+}
   }
 };
 </script>
+
+
 
 
 <style scoped>

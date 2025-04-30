@@ -1,21 +1,25 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import LoginRegisterView from '../views/LoginRegisterView.vue';
-import Register from '../views/Register.vue'; // Optional: only if you use it
+import { createRouter, createWebHistory } from 'vue-router'
+import LoginRegisterView from '../views/LoginRegisterView.vue'
 
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: LoginRegisterView, // 👈 Use your login/register form here
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: Register, // ✅ If you have a separate register view
-  }
-];
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: LoginRegisterView, // Show login/register on home
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/AboutView.vue'), // lazy-loaded
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginRegisterView, // optional route alias if needed
+    },
+  ],
+})
 
-export default createRouter({
-  history: createWebHistory(),
-  routes
-});
+export default router

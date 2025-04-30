@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eco Tips - EcoTrack</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #2ecc71 !important;
+    }
+
+    .nav-link {
+      transition: 0.3s;
+    }
+
+    .nav-link:hover {
+      color: #2ecc71 !important;
+    }
+
+    .navbar {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .btn-profile {
+      border: none;
+      background: none;
+      color: #333;
+    }
+
+    .btn-profile:hover {
+      color: #2ecc71;
+    }
+
+    /* Optional: Dark background when menu opens (mobile) */
+    .navbar-collapse.show {
+      background-color: #f8f9fa;
+      padding: 1rem;
+    }
+
+    .social-icon:hover {
+        color: #2ecc71 !important;
+        transform: scale(1.2);
+        transition: 0.3s;
+      }
+
+      #contact input:focus,
+#contact textarea:focus {
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.25);
+  transition: 0.3s;
+}
+
+      
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">EcoTrack</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ecoNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="ecoNavbar">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="track-waste.html"><i class="fas fa-leaf"></i> Track Waste</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="statistics.html"><i class="fas fa-chart-line"></i> Statistics</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="tips.html"><i class="fas fa-lightbulb"></i> Tips</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+        </li>
+        
+        <!-- Optional: Profile dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle"></i> Profile
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#">My Account</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Hero section -->
+<section class="hero-section d-flex align-items-end">
+  <div class="hero-overlay"></div>
+  <div class="container position-relative">
+    <div class="row justify-content-end">
+      <div class="col-lg-6 text-white text-end mb-5" data-aos="fade-left">
+        <h1 class="display-4 fw-bold mb-3">
+          Mirësevjen në <span class="text-success">Eco Track 🌿</span>
+        </h1>
+        <p class="lead mb-4">
+          Monitoro, menaxho dhe zvogëlo ndikimin tënd në mjedis.
+        </p>
+        <a href="#track" class="btn btn-success btn-lg" data-aos="zoom-in" data-aos-delay="200">
+          Track Waste Now
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+  
+ <!-- Tips Section -->
+<section class="py-5" id="tips">
+  <div class="container">
+    <h2 class="text-center section-title mb-4" data-aos="fade-up"><i class="fas fa-lightbulb text-warning me-2"></i>Këshilla Eco-Friendly</h2>
+
+    <div class="text-center mb-4" data-aos="fade-up" data-aos-delay="100">
+      <button class="btn btn-outline-success m-1 filter-btn" data-category="all">Të gjitha</button>
+      <button class="btn btn-outline-primary m-1 filter-btn" data-category="daily">Të përditshme</button>
+      <button class="btn btn-outline-warning m-1 filter-btn" data-category="home">Në shtëpi</button>
+      <button class="btn btn-outline-info m-1 filter-btn" data-category="energy">Energji</button>
+      <button class="btn btn-outline-success m-1 filter-btn" data-category="recycle">Riciklim</button>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-4 tip-card" data-category="recycle" data-aos="flip-left" data-aos-delay="100">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-recycle text-success mb-3"></i>
+            <h5 class="card-title">Përdor sende të ripërdorshme</h5>
+            <p class="card-text">Zëvendëso shishet plastike me ato metalike ose qelqi që mund t’i përdorësh disa herë.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4 tip-card" data-category="daily" data-aos="flip-left" data-aos-delay="200">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-shopping-bag text-warning mb-3"></i>
+            <h5 class="card-title">Mbaj çantë prej cope</h5>
+            <p class="card-text">Shmang qeset plastike duke marrë gjithmonë me vete një çantë tekstili.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4 tip-card" data-category="home" data-aos="flip-left" data-aos-delay="300">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-compost text-brown mb-3"></i>
+            <h5 class="card-title">Komposto mbetjet ushqimore</h5>
+            <p class="card-text">Krijo kompost për kopshtin duke përdorur mbetjet e frutave dhe perimeve.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4 tip-card" data-category="energy" data-aos="flip-left" data-aos-delay="400">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-bolt text-info mb-3"></i>
+            <h5 class="card-title">Kurse energjinë</h5>
+            <p class="card-text">Fike dritat dhe pajisjet që nuk i përdor për të ulur konsumin e energjisë.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4 tip-card" data-category="home" data-aos="flip-left" data-aos-delay="500">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-water text-primary mb-3"></i>
+            <h5 class="card-title">Ruaj ujin</h5>
+            <p class="card-text">Mos lër çezmën hapur kur lan dhëmbët dhe përdor ujë me kursim gjatë larjes së enëve.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4 tip-card" data-category="daily" data-aos="flip-left" data-aos-delay="600">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-tree text-success mb-3"></i>
+            <h5 class="card-title">Mbjell një pemë</h5>
+            <p class="card-text">Një pemë absorbon deri në 22 kg CO₂ në vit. Ndihmo për një ajër më të pastër!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 800, once: true });
+
+  // Filtering logic
+  const buttons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.tip-card');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = btn.getAttribute('data-category');
+
+      cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        if (category === 'all' || cardCategory === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery (optional, if you need it for more advanced interaction) -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Mund të shtosh logjikë me jQuery nëse do
+  $(document).ready(function(){
+    console.log("Navbar loaded successfully!");
+  });
+</script>
+
+</body>
+</html>

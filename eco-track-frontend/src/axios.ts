@@ -6,7 +6,7 @@ axios.defaults.baseURL = 'http://localhost:8000/api'
 axios.defaults.headers.common['Accept'] = 'application/json'
 
 // ✅ Vendos token nëse ekziston
-const token = localStorage.getItem('jwt')
+const token = localStorage.getItem('access_token') // <-- fix here
 if (token) {
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }
