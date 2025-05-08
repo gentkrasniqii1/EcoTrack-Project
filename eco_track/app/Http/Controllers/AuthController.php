@@ -2,57 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-class AuthController extends Controller
-{
-    //
-}
-
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'username' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed'
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+       
+
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+            'role' => 'user', // Default role
         ]);
 
-        return response()->json(['message' => 'User registered successfully!']);
+        $user->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'User registered successfully'], 201);
     }
 
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
+        if (!$token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => auth()->user()
+        ]);
     }
 
     public function logout()
     {
-        JWTAuth::invalidate(JWTAuth::getToken());
-
-        return response()->json(['message' => 'Logged out successfully']);
+        auth()->logout();
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
-    public function user()
+    public function me()
     {
-        return response()->json(JWTAuth::user());
+        return response()->json(auth()->user());
     }
 }

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eco Track </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #2ecc71 !important;
+    }
+
+    .nav-link {
+      transition: 0.3s;
+    }
+
+    .nav-link:hover {
+      color: #2ecc71 !important;
+    }
+
+    .navbar {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .btn-profile {
+      border: none;
+      background: none;
+      color: #333;
+    }
+
+    .btn-profile:hover {
+      color: #2ecc71;
+    }
+
+    /* Optional: Dark background when menu opens (mobile) */
+    .navbar-collapse.show {
+      background-color: #f8f9fa;
+      padding: 1rem;
+    }
+
+    .social-icon:hover {
+        color: #2ecc71 !important;
+        transform: scale(1.2);
+        transition: 0.3s;
+      }
+
+      #contact input:focus,
+#contact textarea:focus {
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.25);
+  transition: 0.3s;
+}
+
+      
+body {
+  background-color: #f4f6f7;
+}
+
+.section-title {
+  font-weight: bold;
+  color: #2ecc71;
+}
+
+.stat-box {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.stat-box h2 {
+  color: #2ecc71;
+}
+
+.form-control:focus {
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.2);
+}
+
+.custom-shape-divider-top-eco {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  margin-top: -1px;
+}
+
+.custom-shape-divider-top-eco svg {
+  position: relative;
+  display: block;
+  width: calc(140% + 1.3px);
+  height: 100px;
+}
+
+.custom-shape-divider-top-eco .shape-fill {
+  fill: #f4f6f7; /* e njëjta ngjyrë me seksionin e statistikave */
+}
+
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">EcoTrack</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ecoNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="ecoNavbar">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html"><i class="fas fa-home"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="track-waste.html"><i class="fas fa-leaf"></i> Track Waste</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="statistics.html"><i class="fas fa-chart-line"></i> Statistics</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="tips.html"><i class="fas fa-lightbulb"></i> Tips</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+        </li>
+        
+        <!-- Optional: Profile dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle"></i> Profile
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#">My Account</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Hero section -->
+<section class="hero-section d-flex align-items-end">
+  <div class="hero-overlay"></div>
+  <div class="container position-relative">
+    <div class="row justify-content-end">
+      <div class="col-lg-6 text-white text-end mb-5" data-aos="fade-left">
+        <h1 class="display-4 fw-bold mb-3">
+          Mirësevjen në <span class="text-success">Eco Track 🌿</span>
+        </h1>
+        <p class="lead mb-4">
+          Monitoro, menaxho dhe zvogëlo ndikimin tënd në mjedis.
+        </p>
+        <a href="#track" class="btn btn-success btn-lg" data-aos="zoom-in" data-aos-delay="200">
+          Track Waste Now
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<div class="container py-5">
+  <h2 class="text-center section-title mb-5" data-aos="fade-up">📈 Statistikat Mjedisore</h2>
+
+  <!-- Statistika -->
+  <div class="row mb-5" data-aos="fade-up">
+    <div class="col-md-4 mb-3">
+      <div class="stat-box">
+        <i class="fas fa-weight fa-2x mb-2 text-success"></i>
+        <h2>18.6 kg</h2>
+        <p>Totali i mbeturinave</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="stat-box">
+        <i class="fas fa-recycle fa-2x mb-2 text-primary"></i>
+        <h2>Plastika</h2>
+        <p>Lloji më i zakonshëm</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="stat-box">
+        <i class="fas fa-calendar-alt fa-2x mb-2 text-warning"></i>
+        <h2>Mars 2025</h2>
+        <p>Muaji me më shumë mbetje</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grafikët -->
+  <div class="row">
+    <div class="col-md-6 mb-4" data-aos="fade-right">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <h5 class="text-center mb-3">Përqindja sipas Llojit</h5>
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4" data-aos="fade-left">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <h5 class="text-center mb-3">Sasia mujore (kg)</h5>
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+  
+<!-- Contact Section -->
+<section class="py-5" id="contact" style="background-color: #ffffff;">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Info Column -->
+      <div class="col-md-6 mb-4" data-aos="zoom-in-right">
+        <h3 class="text-success fw-bold mb-4">Na Kontakto</h3>
+        <p class="mb-4">Keni pyetje, sugjerime apo dëshironi të bashkëpunoni me ne? Na shkruani dhe do t'ju përgjigjemi sa më shpejt.</p>
+        <ul class="list-unstyled">
+          <li class="mb-3"><i class="fas fa-phone text-success me-2"></i> +355 69 000 0000</li>
+          <li class="mb-3"><i class="fas fa-envelope text-success me-2"></i> info@ecotrack.com</li>
+          <li><i class="fas fa-map-marker-alt text-success me-2"></i> Tirana, Albania</li>
+        </ul>
+      </div>
+
+      <!-- Form Column -->
+      <div class="col-md-6" data-aos="zoom-in-left">
+        <form>
+          <div class="mb-3">
+            <input type="text" class="form-control shadow-sm" placeholder="Emri juaj" required>
+          </div>
+          <div class="mb-3">
+            <input type="email" class="form-control shadow-sm" placeholder="Email adresa" required>
+          </div>
+          <div class="mb-3">
+            <textarea class="form-control shadow-sm" rows="5" placeholder="Mesazhi juaj..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-success w-100">Dërgo Mesazh</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+  
+  <!-- Footer -->
+  <footer class="bg-dark text-white pt-5 pb-4" data-aos="fade-up">
+    <div class="container text-md-start text-center">
+      <div class="row">
+        <!-- Logo & Mission -->
+        <div class="col-md-4 mb-4">
+          <h5 class="text-success fw-bold">EcoTrack 🌿</h5>
+          <p>Ne ndihmojmë komunitetet të monitorojnë ndikimin e tyre në mjedis dhe të marrin hapa të qëndrueshëm.</p>
+        </div>
+  
+        <!-- Links -->
+        <div class="col-md-4 mb-4">
+          <h6 class="text-uppercase fw-bold">Linke të shpejtë</h6>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white text-decoration-none d-block py-1">Home</a></li>
+            <li><a href="#" class="text-white text-decoration-none d-block py-1">Track Waste</a></li>
+            <li><a href="#" class="text-white text-decoration-none d-block py-1">Statistics</a></li>
+            <li><a href="#" class="text-white text-decoration-none d-block py-1">Contact</a></li>
+          </ul>
+        </div>
+  
+        <!-- Social Media -->
+        <div class="col-md-4 mb-4">
+          <h6 class="text-uppercase fw-bold">Na ndiqni</h6>
+          <div class="d-flex justify-content-md-start justify-content-center">
+            <a href="#" class="me-3 text-white fs-5 social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="me-3 text-white fs-5 social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="me-3 text-white fs-5 social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-white fs-5 social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+  
+      <hr class="border-light">
+      <div class="text-center">
+        <small>&copy; 2025 EcoTrack. Të gjitha të drejtat e rezervuara.</small>
+      </div>
+    </div>
+  </footer>
+  
+  
+<!-- Content -->
+<div class="container mt-5">
+  <h1>Welcome to Eco Track</h1>
+  <p>This is a simple, responsive, creative navbar built with Bootstrap 5 for your project.</p>
+</div>
+
+
+<!-- AOS Library -->
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+  AOS.init();
+</script>
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    once: true, // animacion vetëm herën e parë
+    duration: 800, // kohëzgjatja e animacionit
+  });
+</script>
+
+
+<script>
+  AOS.init();
+
+  const form = document.getElementById('wasteForm');
+  const table = document.getElementById('wasteTable');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const type = form.elements[0].value;
+    const weight = form.elements[1].value;
+    const date = form.elements[2].value;
+    const comment = form.elements[3].value;
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${type}</td>
+      <td>${weight}</td>
+      <td>${date}</td>
+      <td>${comment}</td>
+    `;
+
+    table.appendChild(row);
+    form.reset();
+  });
+</script>
+<!-- JS & Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init();
+
+  // Pie chart - waste by type
+  const pieCtx = document.getElementById('pieChart').getContext('2d');
+  new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: ['Plastikë', 'Letër', 'Ushqimore', 'Metal', 'Tjetër'],
+      datasets: [{
+        data: [45, 20, 15, 10, 10],
+        backgroundColor: ['#2ecc71', '#3498db', '#f1c40f', '#e67e22', '#95a5a6']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+
+  // Bar chart - monthly total
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj'],
+      datasets: [{
+        label: 'Kg të mbeturinave',
+        data: [2.5, 3.7, 6.0, 3.0, 3.4],
+        backgroundColor: '#2ecc71'
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
+</script>
+
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery (optional, if you need it for more advanced interaction) -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+  // Mund të shtosh logjikë me jQuery nëse do
+  $(document).ready(function(){
+    console.log("Navbar loaded successfully!");
+  });
+</script>
+
+</body>
+</html>
