@@ -36,11 +36,17 @@ return [
     */
 
     'guards' => [
-        'api' => [
-            'driver' => 'jwt',
+        'web' => [
+            'driver' => 'session',
             'provider' => 'users',
         ],
     ],
+
+    'api' => [
+        'driver' => 'jwt', // <-- ndrysho nga 'token' në 'jwt'
+        'provider' => 'users',
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------

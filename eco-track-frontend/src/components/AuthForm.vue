@@ -11,18 +11,46 @@
           <input v-model="form.username" type="text" placeholder="Username" class="input" required />
           <input v-model="form.phone" type="text" placeholder="Phone" class="input" required />
         </div>
+        <div v-else key="register">
+          <h2>Create Account</h2>
+          <form @submit.prevent="handleRegister">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" v-model="registerData.name" placeholder="Your full name" required />
+            </div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" v-model="registerData.username" placeholder="Choose a username" required />
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="text" v-model="registerData.phone" placeholder="Enter your phone number" required />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" v-model="registerData.email" placeholder="Enter your email" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <div class="password-wrapper">
+                <input :type="showPassword ? 'text' : 'password'" v-model="registerData.password" placeholder="Create a password" required />
+                <span class="toggle-visibility" @click="togglePassword">
+                  {{ showPassword ? '🙈' : '👁️' }}
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Confirm Password</label>
+              <input type="password" v-model="registerData.confirmPassword" placeholder="Confirm your password" required />
+            </div>
+            <button type="submit" class="btn">Register</button>
 
-        <input v-model="form.email" type="email" placeholder="Email" class="input" required />
-        
-        <div class="relative">
-          <input :type="showPassword ? 'text' : 'password'" v-model="form.password" placeholder="Password" class="input" required />
-          <span class="absolute top-2 right-3 text-gray-600 cursor-pointer" @click="togglePassword">
-            {{ showPassword ? '🙈' : '👁️' }}
-          </span>
-        </div>
+            <div class="divider">or</div>
+            <button type="button" class="btn google-btn">Sign up with Google</button>
+            <button type="button" class="btn facebook-btn">Sign up with Facebook</button>
 
-        <div v-if="!isLogin">
-          <input v-model="form.confirmPassword" type="password" placeholder="Confirm Password" class="input" required />
+            <div class="toggle">Already have an account? <a @click="toggleForm">Sign In</a></div>
+          </form>
         </div>
 
         <button :disabled="loading" class="btn w-full">
@@ -45,89 +73,67 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import AuthService from '@/services/AuthService'; // 👈 Import AuthService (you need to create it as I showed before!)
 
-const isLogin = ref(true);
-const showPassword = ref(false);
-const loading = ref(false);
-const router = useRouter();
-const toast = useToast();
-
-const form = ref({
-  name: '',
-  username: '',
-  phone: '',
-  email: '',
-  password: '',
-  confirmPassword: ''
-});
-
-const toggleForm = () => {
-  isLogin.value = !isLogin.value;
-  Object.keys(form.value).forEach(key => form.value[key] = '');
-};
-
-const togglePassword = () => showPassword.value = !showPassword.value;
-
-const handleLogin = async () => {
-  loading.value = true;
-  try {
-    const res = await axios.post('http://127.0.0.1:8000/api/login', {
-      email: form.value.email,
-      password: form.value.password
-    });
-
-    localStorage.setItem('jwt', res.data.access_token);
-    localStorage.setItem('user', JSON.stringify(res.data.user));
-    axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access_token}`;
-
-    toast.success('Login successful!');
-    const role = res.data.user.role;
-    if (role === 'admin') {
-      router.push('/admin-dashboard');
-    } else {
-      router.push('/user-dashboard');
+export default {
+  name: 'AuthPureCSS',
+  data() {
+    return {
+      isLogin: true,
+      isLoading: false,
+      showPassword: false,
+      loginData: { identifier: '', password: '' },
+      registerData: {
+        name: '',
+        username: '',
+        phone: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      },
+      toast: useToast()
+    };
+  },
+  methods: {
+    toggleForm() {
+      this.isLogin = !this.isLogin;
+    },
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
+    async handleLogin() {
+      this.isLoading = true;
+      try {
+        const res = await axios.post('/login', this.loginData);
+        const token = res.data.token;
+        localStorage.setItem('jwt', token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        this.toast.success('Login successful!');
+      } catch (err) {
+        this.toast.error('Invalid credentials');
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async handleRegister() {
+      this.isLoading = true;
+      try {
+        await axios.post('/register', this.registerData);
+        this.toast.success('Registration successful! Please login.');
+        this.toggleForm();
+      } catch (err) {
+        this.toast.error('Registration failed');
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    mockOAuth(provider) {
+      this.toast.info(`Redirecting to ${provider} login...`);
     }
-  } catch (error) {
-    console.error(error.response?.data || error);
-    toast.error(error.response?.data?.error || 'Login failed');
-  } finally {
-    loading.value = false;
-  }
-};
-
-const handleRegister = async () => {
-  loading.value = true;
-
-  if (form.value.password !== form.value.confirmPassword) {
-    toast.error("Passwords don't match");
-    loading.value = false;
-    return;
-  }
-
-  try {
-    await axios.post('http://127.0.0.1:8000/api/register', {
-      name: form.value.name,
-      username: form.value.username,
-      phone: form.value.phone,
-      email: form.value.email,
-      password: form.value.password,
-      password_confirmation: form.value.confirmPassword
-    });
-
-    toast.success('Registration successful! Please log in.');
-    toggleForm();
-  } catch (err) {
-    console.error(err.response?.data || err);
-    if (err.response?.data?.errors) {
-      Object.values(err.response.data.errors).flat().forEach(msg => toast.error(msg));
-    } else {
-      toast.error(err.response?.data?.message || 'Registration failed');
-    }
-  } finally {
-    loading.value = false;
   }
 };
 </script>
+
 
 <style scoped>
 .input {

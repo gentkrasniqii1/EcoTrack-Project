@@ -4,61 +4,70 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    //
+}
+
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
+class AuthController extends Controller
+{
+    /**
+     * Login me email dhe password
+     */
+    public function handleGoogleCallback()
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed'
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
-       
-
-
-        $user = User::create([
-            'name' => $validated['name'],
-            'username' => $validated['username'],
-            'phone' => $validated['phone'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
-            'role' => 'user', // Default role
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
-        $user->sendEmailVerificationNotification();
-
-        return response()->json(['message' => 'User registered successfully'], 201);
+        return response()->json(['message' => 'User registered successfully!']);
     }
-
-    public function login(Request $request)
+    
+     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
-        ]);
+        return response()->json(['token' => $token]);
     }
 
-    public function logout()
-    {
-        auth()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
+    /**
+     * Kthe informacionin e përdoruesit të autentikuar
+     */
     public function me()
     {
-        return response()->json(auth()->user());
+        return response()->json(Auth::user());
+    }
+
+    /**
+     * Logout dhe invalidim i token-it
+     */
+    public function logout(Request $request)
+    {
+        JWTAuth::invalidate(JWTAuth::getToken());
+
+        return response()->json(['message' => 'Logged out successfully']);
+    }
+
+    public function user()
+    {
+        return response()->json(JWTAuth::user());
     }
 }

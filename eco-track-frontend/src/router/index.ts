@@ -1,24 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-// ======================
-// 📦 Component Imports
-// ======================
+// ==========================
+// 🔄 Component Imports
+// ==========================
 import AuthForm from '@/components/AuthForm.vue';
 import AdminDashboard from '@/components/AdminDashboard.vue';
 import UserDashboard from '@/views/UserDashboard.vue';
 
-// ======================
-// 📍 Route Definitions
-// ======================
+// ==========================
+// 🌐 Route Definitions
+// ==========================
 const routes = [
-  // 🔐 Auth Page
+  // 🔐 Public
   {
     path: '/auth',
     name: 'auth',
     component: AuthForm
   },
 
-  // 🛠 Admin Routes
+  // 🛠 Admin routes
   {
     path: '/admin-dashboard',
     name: 'admin-dashboard',
@@ -32,7 +32,7 @@ const routes = [
     meta: { requiresAuth: true, role: 'admin' }
   },
 
-  // 👤 User Routes
+  // 👤 User routes
   {
     path: '/user-dashboard',
     name: 'user-dashboard',
@@ -44,20 +44,23 @@ const routes = [
     name: 'user-messages',
     component: () => import('@/components/UserMessages.vue'),
     meta: { requiresAuth: true, role: 'user' }
+  },
+
+  // 🌐 Default redirect
+  {
+    path: '/',
+    redirect: '/auth'
   }
 ];
 
-// ======================
-// 🚦 Router Instance
-// ======================
+// ==========================
+// 🚦 Router Setup & Guards
+// ==========================
 const router = createRouter({
   history: createWebHistory(),
   routes
 });
 
-// ======================
-// 🔒 Route Guard
-// ======================
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('jwt');
   const user = JSON.parse(localStorage.getItem('user') || 'null');
