@@ -21,7 +21,10 @@
       v-if="dropdownOpen"
       class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded border z-50"
     >
-      <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm text-gray-700">👤 Profile</a>
+    <button @click="showProfileModal = true" class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-gray-700">
+  👤 Profile
+</button>
+
       <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm text-gray-700">⚙️ Settings</a>
       <button
         @click="logout"
@@ -98,6 +101,28 @@
           <p v-else class="text-gray-600">You haven’t submitted any reports yet.</p>
         </section>
       </main>
+
+      <!-- 👤 Profile Modal -->
+<div v-if="showProfileModal" class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+  <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6 relative">
+    <h2 class="text-xl font-bold mb-4 text-gray-800">👤 Profile Information</h2>
+    <ul class="text-gray-700 space-y-2">
+      <li><strong>Name:</strong> {{ user.name }}</li>
+      <li><strong>Email:</strong> {{ user.email }}</li>
+      <li><strong>Phone:</strong> {{ user.phone || 'N/A' }}</li>
+      <li><strong>Role:</strong> {{ user.role }}</li>
+    </ul>
+    <div class="mt-6 flex justify-between">
+      <button class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300" @click="showProfileModal = false">
+        Close
+      </button>
+      <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Edit Info
+      </button>
+    </div>
+  </div>
+</div>
+
   
       <!-- 📝 Modal -->
       <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -136,6 +161,8 @@
   const stats = ref({ totalReports: 0, totalAmount: 0 });
   const showModal = ref(false);
   const dropdownOpen = ref(false);
+  const showProfileModal = ref(false);
+
   
   const form = ref({
     type: '',

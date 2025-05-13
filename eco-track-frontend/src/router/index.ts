@@ -1,24 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-// ==========================
-// 🔄 Component Imports
-// ==========================
+// Components
 import AuthForm from '@/components/AuthForm.vue';
 import AdminDashboard from '@/components/AdminDashboard.vue';
 import UserDashboard from '@/views/UserDashboard.vue';
 
-// ==========================
-// 🌐 Route Definitions
-// ==========================
 const routes = [
-  // 🔐 Public
+  // 🔓 Login/Register (AuthForm.vue)
   {
-    path: '/auth',
+    path: '/',
     name: 'auth',
     component: AuthForm
   },
 
-  // 🛠 Admin routes
+  // 🛠 Admin-only
   {
     path: '/admin-dashboard',
     name: 'admin-dashboard',
@@ -32,7 +27,7 @@ const routes = [
     meta: { requiresAuth: true, role: 'admin' }
   },
 
-  // 👤 User routes
+  // 👤 User-only
   {
     path: '/user-dashboard',
     name: 'user-dashboard',
@@ -46,31 +41,29 @@ const routes = [
     meta: { requiresAuth: true, role: 'user' }
   },
 
-  // 🌐 Default redirect
+  // ❌ 404 fallback
   {
-    path: '/',
-    redirect: '/auth'
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ];
 
-// ==========================
-// 🚦 Router Setup & Guards
-// ==========================
 const router = createRouter({
   history: createWebHistory(),
   routes
 });
 
+// ✅ Route guard
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('jwt');
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
   if (to.meta.requiresAuth && !token) {
-    return next('/auth');
+    return next('/');
   }
 
   if (to.meta.role && user?.role !== to.meta.role) {
-    return next('/auth');
+    return next('/');
   }
 
   next();
